@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html ng-app="notebooks">
+<head>
+    <meta charset="utf-8" />
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script> <!-- Must be dynamic dependency.-->
+    <meta name="google-site-verification" content="KbU3iN0xNAize9fZKStaAxmv3zSQKNGPNA8wBibCrZk" />
+    <meta name="google-site-verification" content="odGuUtT2NIcDQrKKLShBxd6RYuqFnizdyWffrkHlPzQ" />
+    <meta name="msvalidate.01" content="1FB238D982DEC598F9B856044DEA2D2B" /> <!-- bing web master tools -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Provides free online access to Jupyter notebooks running in the cloud on Microsoft Azure.">
+    <meta name="keywords" content="IPython Microsoft Azure Jupyter notebooks online Python machine learning scientific computing technical computing workbook share sharing collaboration R F# FSharp anaconda pandas matplotlib jupyterlab ubuntu tutorial plot markdown">
+    <title ng-bind="$root.page_title">Microsoft Azure Notebooks - Online Jupyter Notebooks</title>
+
+    <link href="/CSS/Site.less" rel="stylesheet"/>
+
+    <link href="/bundles/vnext/dependencies_css?v=bgBz0km1Vdmd--lxVklGsYZbmfyhJRbBdc8VmAjvMIM1" rel="stylesheet"/>
+
+
+    <script src="/bundles/vnext/dependencies?v=IHKPRKAJ83NqEOqfwTd4nXDYYwRiZO0a1klLljieNT01"></script>
+
+
+    <script src="/bundles/vnext/aznb_js?v=GnxGAD1D_JrsTWEIgxTvHkquwcoUYjTf4MeLnUa_oc81"></script>
+
+    <script src="/bundles/vnext/aznb_html?v=wuk8oiUwy64Kx4plHtSRsFJtHShB2dFh6-mvw3Bah101"></script>
+
+
+    <base href="/">
+    <noscript></noscript>
+
+    <!-- EU Cookie Consent initialization -->
+            <script src="https://c.s-microsoft.com/mscc/statics/mscc-0.4.1.min.js"></script>
+            <link rel="stylesheet" type="text/css" href="https://c.s-microsoft.com/mscc/statics/mscc-0.4.1.min.css">
+
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="/Proprietary/gtag/gtag.js?id=UA-47764989-10"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        var initializeGA = () => {
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'UA-47764989-10');
+        }
+
+        if (typeof (mscc) === undefined || mscc.hasConsent()) {
+            initializeGA();
+        } else {
+            mscc.on('consent', initializeGA);
+        }
+    </script>
+</head>
+<body ng-controller="SiteController as site" ng-class="{'body-survey-notification' : site.getDisplaySurvey(), 'tips-visible': !site.getIsHomePage() && site.tips.length > 0}">
+
+    <input name="__RequestVerificationToken" type="hidden" value="SNZTXPKbhm9byVtCqRX78idAurz6UbzpHB4RZL2i5fdPw-dnG6GrZ682gw3v7aI7Rqj_BrEtp_gcUEg6ZQcty9cfjDHO7cBc7Y-RfUOZHlyUm-aWwRMXFXQJrYvqgVYpAMJAs9qfxmmuSnpXUpWhFw2" />
+
+        <div class="eu-cookie-banner"><div id='msccBanner' dir='ltr' data-site-name='Azure Notebooks' data-mscc-version='0.4.1' data-nver='aspnet-3.1.1' data-sver='0.1.2' class='cc-banner' role='alert' aria-labelledby='msccMessage'><div class='cc-container'><svg class='cc-icon cc-v-center' x='0px' y='0px' viewBox='0 0 44 44' height='30px' fill='none' stroke='currentColor'><circle cx='22' cy='22' r='20' stroke-width='2'></circle><line x1='22' x2='22' y1='18' y2='33' stroke-width='3'></line><line x1='22' x2='22' y1='12' y2='15' stroke-width='3'></line></svg> <span id='msccMessage' class='cc-v-center cc-text' tabindex='0'>This site uses cookies for analytics, personalized content and ads. By continuing to browse this site, you agree to this use.</span> <a href='https://go.microsoft.com/fwlink/?linkid=845480' target='_top' aria-label='Learn more about Microsoft&#39;s Cookie Policy' id='msccLearnMore' class='cc-link cc-v-center cc-float-right' data-mscc-ic='false'>Learn more</a></div></div></div>
+
+    <!-- BEGIN HEADER -->
+<div class="header-container navbar-fixed-top">
+    <div class="header" ng-class="{'fixed-width': site.getIsHomePage()}">
+        <div class="brand-title">
+            <a href="/#" class="logo" ms.pgarea="header" ms.cmpgrp="header" ms.cmptyp="link" ms.cmpnm="" ms.title="Microsoft Azure" ms.interactiontype="1" target="_self">
+                <h1>
+                    <b>Microsoft</b>
+                    Azure Notebooks
+                </h1>
+            </a>
+            <a href="/help/preview" class="preview" target="_self">Preview</a>
+
+            <div class="desktop-navbar">
+                <div class="navbar-fill">
+                    <a href="/home/projects#" class="nav-item" ng-href="{{site.getUserHomeLink()}}/projects#" title="My Projects" target="{{ site.isInRunningNotebook ? '_blank' : '_self'}}">My Projects</a>
+                    <a ng-href="{{site.contextHelpLink}}" class="nav-item" title="Help and Documentation" target="{{ site.isInRunningNotebook ? '_blank' : '_self'}}">Help</a>
+                </div>
+                <div class="account-nav">
+                    <div ng-if="site.getSignedIn()">
+                        <div uib-dropdown>
+                            <div class="ng-cloak">
+                                <a href="#" id="user-dropdown" uib-dropdown-toggle>
+                                    {{site.getCurUserName() || site.getCurUserDisplayName()}}
+                                    <img ng-src="{{site.userPhotoSrc}}" alt="User Profile Image" />
+                                </a>
+                            </div>
+                            <ul class="dropdown-menu account-menu" uib-dropdown-menu aria-labelledby="user-dropdown">
+                                <li class="mini-profile-card">
+                                    <img ng-src="{{site.userPhotoSrc}}" alt="User Profile Image" />
+                                    <div>
+                                        <div class="title">
+                                            {{site.getCurUserName()}}
+                                        </div>
+                                        <div class="subtitle">
+                                            <span>{{site.getCurUserDisplayName()}}</span>
+                                            <a ng-click="site.copyProfileLink()" title="Copy profile link to clipboard"><i class="ms-Icon ms-Icon--Copy"></i></a>
+                                            <a ng-if="!site.UserService.user.generatedId" ng-click="site.updateUserId()" title="Configure User ID"><i class="ms-Icon ms-Icon--ConfigurationSolid"></i></a>
+                                        </div>
+                                    </div>
+                                </li>
+                                <li><a href="{{site.getUserHomeLink()}}#" title="Profile" target="_self">My Account</a></li>
+                                <li ng-if="site.getSignedIn()"><a href="/account/signout" ng-click="site.signout()" title="Sign Out" target="_self">Sign out</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div ng-if="!site.getSignedIn()">
+                        <a href="/account/signin#" ng-click="site.signin()" title="Main Menu Sign In">Sign In</a>
+                    </div>
+                </div>
+            </div>
+
+            <span class="mobile-navbar">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" title="Main Menu">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </span>
+        </div>
+
+        <div class="mobile-navbar">
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav nav-fade">
+                    <li><a href="/home/projects#" class="nav-item" ng-href="{{site.getUserHomeLink()}}/projects#" title="My Projects">Projects</a></li>
+                    <li><a href="/help" ng-href="{{site.contextHelpLink}}" class="nav-item" title="Help and Documentation">Help</a></li>
+
+                    <li ng-if="site.getSignedIn()"><a href="{{site.getUserHomeLink()}}#" title="Main Menu Profile">Profile</a></li>
+                    <li ng-if="site.getSignedIn()"><a href="/account/settings#" title="Main Menu Settings">Settings</a></li>
+                    <li ng-if="site.getSignedIn()"><a href="/account/signout" ng-click="site.signout()" title="Main Menu Sign Out">Sign out</a></li>
+
+                    <li ng-if="!site.getSignedIn()"><a href="/account/signin#" ng-click="site.signin()" title="Main Menu Sign In">Sign In</a></li>
+
+                </ul>
+            </div>
+        </div>
+
+        <div ng-cloak ng-if="site.getDisplaySurvey()" class="notification">
+            <div class="container">
+                <span class="message">Would you tell us how likely you are to recommend Azure Notebooks to a friend or colleague?</span>
+                <span class="buttons">
+                    <a class="btn" ng-click="site.surveyTaken()" href="https://aka.ms/azure-notebooks-survey" target="_blank">Yes</a>
+                    <button type="button" class="btn" ng-click="site.surveyDontShowAgain()">Don't Show Again</button>
+                </span>
+                <button type="button" class="close" aria-label="Close" ng-click="site.surveyDismissed()" title="Close" ng-if="site.shouldDisplaySurveyDismiss"><span aria-hidden="true">×</span></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="tips-container" ng-if="!site.getIsHomePage() && site.tips.length > 0">
+        <div class="current-tip">
+            <tip is-home-page="false" is-signed-in="site.getSignedIn()" tip="site.tips[site.currentTip]" />
+        </div>
+
+        <div class="tip-selector" ng-click="site.nextTip()" ng-show="site.tips.length > 1" title="Next item">
+            <span class="btn tip-selector-button">
+                <i class="ms-Icon ms-Icon--ChevronRight" aria-hidden="true"></i>
+            </span>
+        </div>
+    </div>
+</div>
+
+    <!-- BEGIN BODY -->
+
+    <div class="page-wrap" ng-class="{'eu-cookie-banner-visible': site.showEuCookieBanner()}">
+        
+<div ng-view>
+<div display="!$ctrl.user.id || $ctrl.library == undefined"><div>
+    
+    <div>
+        <div>
+    <div class="body-content info-page">
+        <div class="jumbotron faq-header info-page-header jumbotron-with-breadcrumb-below">
+            <div class="container">
+                <h1 class="clip-text header-with-icon">
+                    <span class="notebook-icon-library header-icon"></span>
+                    <span class="header-text">WORKSHOP_ML_Pro1</span>
+                </h1>
+            </div>
+            <div class="container">
+                
+                
+                
+            </div>
+        </div>
+        <div class="breadcrumb-holder">
+            <ul class="breadcrumb breadcrumb-below-jumbotron container">
+                <li>
+                    <a href="/dudipallisivasai2420">dudipallisivasai2420</a>
+                </li>
+                <li>
+                    <a href="/dudipallisivasai2420/libraries">Libraries</a>
+                </li>
+                <li>
+                    
+                    
+                </li>
+                
+                
+            </ul>
+        </div>
+        <div class="container">
+            
+            
+
+            
+            <div class="file-preview-contents">
+                <br><br>
+                <div class="user-library-desc file-preview-container">
+                    Help others understand your library by creating a README.md.
+                    <br><br>
+                    <a class="btn btn-primary" role="button" href="" ng-click="$ctrl.createReadme()">Create README.md</a>
+                </div>
+            </div>
+        <div kb-shortcuts="$ctrl.keyBindings" focus-on="focusOnPagedDataPageChange" tabindex="-1" class="pagedData">
+    <!-- Button bar -->
+    <div class="row" focus-on="dialogClosedButtonDisabled">
+        <div class="col-md-12">
+            <span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="New" aria-label="New">
+                        <span class="notebook-icon-add library-button-icon"></span>
+                        <span class="library-button-text library-button-text-lowpri">New</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="Edit Library" aria-label="Edit Library">
+                        <span class="notebook-icon-edit library-button-icon"></span>
+                        <span class="library-button-text library-button-text-lowpri">Edit</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="Share Library" aria-label="Share Library">
+                        <span class="notebook-icon-share library-button-icon"></span>
+                        <span class="library-button-text ">Share</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="Clone Library" aria-label="Clone Library">
+                        <span class="notebook-icon-clone library-button-icon"></span>
+                        <span class="library-button-text ">Clone</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    
+
+                    
+
+                    <a class="btn btn-default user-library-button" href="/dudipallisivasai2420/libraries/labsrma/clones" ng-click="button.click($ctrl.data.items.selected)" target="undefined" focus-on="button.focusOn" title="Clones" aria-label="Clones">
+                        <span class="notebook-icon-create-fork library-button-icon"></span>
+                        <span class="library-button-text ">Clones</span>
+                    </a>
+                </span>
+            </span><span>
+                <span>
+                    
+
+                    
+
+                    <a class="btn btn-default user-library-button" href="undefined" ng-click="button.click($ctrl.data.items.selected)" target="undefined" focus-on="button.focusOn" title="Open Terminal" aria-label="Open Terminal">
+                        <span class="notebook-icon-terminal library-button-icon"></span>
+                        <span class="library-button-text library-button-text-lowpri">Terminal</span>
+                    </a>
+                </span>
+            </span><span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="Shutdown Server" aria-label="Shutdown Server">
+                        <span class="glyphicon glyphicon-stop"></span>
+                        <span class="library-button-text library-button-text-lowpri">Shutdown</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="Run Library" aria-label="Run Library">
+                        <span class="notebook-icon-run library-button-icon"></span>
+                        <span class="library-button-text ">Run</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    
+
+                    
+
+                    <a class="btn btn-default user-library-button" href="undefined" ng-click="button.click($ctrl.data.items.selected)" target="undefined" focus-on="button.focusOn" title="Preview or Print" aria-label="Preview or Print">
+                        <span class="notebook-icon-print library-button-icon"></span>
+                        <span class="library-button-text ">Edit</span>
+                    </a>
+                </span>
+            </span><span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="Download File" aria-label="Download File">
+                        <span class="notebook-icon-download library-button-icon"></span>
+                        <span class="library-button-text ">Download</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span><span>
+                <span>
+                    <button class="btn btn-default user-library-button pagedDataButton" ng-click="button.click($ctrl.data.items.selected)" ng-disabled="(button.contextual && $ctrl.data.items.getContextButtonsDisabled() && !button.contextAlwaysOn) || button.getDisabled($ctrl.data.items.selected)" focus-on="undefined" title="Delete File" aria-label="Delete File">
+                        <span class="notebook-icon-trash library-button-icon"></span>
+                        <span class="library-button-text ">Delete</span>
+                    </button>
+
+                    
+
+                    
+                </span>
+            </span>
+
+        </div>
+    </div>
+
+    <!-- Filter UI -->
+    <div class="input-group">
+        <div class="filter-bar">
+            <span class="searchFilter libFilterSearch">
+                <label for="search" style="display:none" id="search">Search</label>
+                <input type="search" ng-model="filter.search" title="Search" placeholder="Search">
+            </span>
+            
+            
+        </div><div class="filter-bar">
+            
+            
+            <span class="paged-filters">
+                <button class="btn btn-default user-library-button inactive" title="undefined" ng-click="filter.click()">
+                    Show hidden items
+                </button>
+            </span>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div>
+                <table role="grid" class="table display no-footer user-library-table" aria-label="Showing 1 to 10 of 17 notebooks">
+                    <thead>
+                        <tr role="row">
+                            <th role="columnheader" width="*">File name</th>
+                            
+                            <th role="columnheader" width="100">File type</th>
+                            <th role="columnheader" width="100">Modified</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr><tr role="row">
+                            <td role="gridcell" aria-label="undefined">
+                                <a href="undefined" target="undefined">
+                                    <span class="undefined"></span>&nbsp;
+                                    <span>
+                                        undefined
+                                    </span>
+                                </a>
+                                <div ng-show="$ctrl.renameInProgressForFile && $ctrl.renameInProgressForFile.path===file.path" class="force-inline">
+                                    <form ng-submit="$ctrl.rename()" class="force-inline" stop-click-propogation="">
+                                        <input class="input-field inline-rename-input" type="text" ng-model="$ctrl.newFileName" autocomplete="off" size="15" title="File Name" focus-on="renameFileFocus" placeholder="File Name" on-escape="$ctrl.cancelRename()">
+                                    </form>
+                                </div>
+                            </td>
+                            
+                            <td role="gridcell">undefined</td>
+                            <td role="gridcell" title=""></td>
+                            
+                        </tr>
+                        
+                        
+                        
+                    </tbody>
+                </table>
+            </div>
+
+    <!-- Pagination -->
+    <div>
+        Showing 1 to 10 of 17 notebooks
+
+        <div class="pull-right">
+            <ul title="Page undefined" class="pagination"><li><a href="https://notebooks.azure.com/dudipallisivasai2420/projects/labsrma?page=0" disabled="disabled">&lt;</a></li><li><a href="https://notebooks.azure.com/dudipallisivasai2420/projects/labsrma?page=1">1</a></li><li><a href="https://notebooks.azure.com/dudipallisivasai2420/projects/labsrma?page=2">2</a></li><li><a href="https://notebooks.azure.com/dudipallisivasai2420/projects/labsrma?page=1">&gt;</a></li></ul>
+        </div>
+    </div>
+</div></div>
+    </div>
+</div>
+    </div>
+</div></div>
+</div>
+
+
+    </div>
+
+    <!-- END BODY -->
+
+    <!-- BEGIN FOOTER -->
+<footer class="footer-container">
+    <div class="footer" ng-class="{'fixed-width': site.getIsHomePage()}">
+        <div class="row">
+            <div class="col-md-2 col-s-2 col-xs-4">
+                <h1>Product</h1>
+                <h2>
+                    <a href="/new/#top" ms.title="What's new" class="ctl_footerNavLink" data-bi-name="Footer_WhatsNew" data-bi-slot="1" ms.ea_action="ntd">
+                        What's new
+                    </a>
+                </h2>
+                <h2>
+                    <a href="/status/#top" ms.title="Status" class="ctl_footerNavLink" data-bi-name="Footer_Status" data-bi-slot="2" ms.ea_action="ntd">
+                        Status
+                    </a>
+                </h2>
+                <h2>
+                    <a href="{{site.helpBaseUrl}}" ms.title="Help" class="ctl_footerNavLink" data-bi-name="Footer_Help" data-bi-slot="3" ms.ea_action="ntd">
+                        Help
+                    </a>
+                </h2>
+            </div>
+            <div class="col-md-2 col-s-2 col-xs-4">
+                <h1>Communication</h1>
+                <h2>
+                    <a href="/faq/#top" ms.title="FAQ" class="ctl_footerNavLink" data-bi-name="Footer_FaqSupport" data-bi-slot="4" ms.ea_action="ntd">
+                        FAQ
+                    </a>
+                </h2>
+                <h2>
+                    <a href="https://github.com/Microsoft/AzureNotebooks/issues" target="_blank" ms.title="Contact us" class="ctl_footerNavLink" data-bi-name="Footer_ContactUs" data-bi-slot="5" ms.ea_action="ntd">
+                        Contact us
+                    </a>
+                </h2>
+                <h2>
+                    <a href="https://jupyter.org" target="_blank" ms.title="Jupyter.org" class="ctl_footerNavLink" data-bi-name="Footer_JupyterOrg" data-bi-slot="6" ms.ea_action="ntd">
+                        Jupyter.org
+                    </a>
+                </h2>
+            </div>
+            <div class="col-md-3 col-s-3 col-xs-4">
+                <h1>Legal</h1>
+                <h2>
+                    <a href="https://go.microsoft.com/fwlink/?LinkId=248681" target="_blank" ms.title="Privacy and cookies " class="ctl_footerNavLink" data-bi-name="Footer_PrivacyandCookies" data-bi-slot="7" ms.ea_action="ntd">
+                        Privacy and cookies
+                    </a>
+                </h2>
+                <h2>
+                    <a href="https://go.microsoft.com/fwlink/?LinkID=530144" target="_blank" ms.title="Terms of use" class="ctl_footerNavLink" data-bi-name="Footer_TermsOfUse" data-bi-slot="8" ms.ea_action="ntd">
+                        Terms of use
+                    </a>
+                </h2>
+                <h2>
+                    <a href="https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/en-us.aspx" target="_blank" ms.title="Trademarks" class="ctl_footerNavLink" data-bi-name="Footer_Trademarks" data-bi-slot="9" ms.ea_action="ntd">
+                        Trademarks
+                    </a>
+                </h2>
+            </div>
+        </div>
+        <div class="copyright">
+            &copy; 2019 Microsoft
+        </div>
+    </div>
+</footer>
+
+<!-- END FOOTER -->
+
+</body>
+</html>
